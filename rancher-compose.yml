@@ -1,0 +1,19 @@
+version: '2'
+services:
+  zipkin:
+    scale: 1
+    start_on_create: true
+  datamgt-mq:
+    scale: 1
+    start_on_create: true
+  consul-client:
+    scale: 1
+    start_on_create: true
+  consul-register:
+    start_on_create: true
+  consul-server:
+    scale: 2
+    start_on_create: true
+  consul-ui:
+    scale: 1
+    start_on_create: true
