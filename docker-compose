@@ -1,0 +1,55 @@
+version: '2'
+services:
+  consul-client:
+    image: consul
+    stdin_open: true
+    tty: true
+    links:
+    - consul-server:consul
+    command:
+    - consul
+    - agent
+    - -disable-host-node-id=true
+    - -client=0.0.0.0
+    - -data-dir=/tmp/consul
+    - -retry-join=consul
+    labels:
+      io.rancher.container.pull_image: always
+  consul-register:
+    image: rancher/dns-service
+    links:
+    - consul-server:consul-server
+    - consul-client:consul-client
+  consul-server:
+    image: consul
+    stdin_open: true
+    tty: true
+    links:
+    - consul-ui:consul
+    command:
+    - consul
+    - agent
+    - -disable-host-node-id=true
+    - -server
+    - -client=0.0.0.0
+    - -data-dir=/tmp/consul
+    - -retry-join=consul
+    labels:
+      io.rancher.container.pull_image: always
+  consul-ui:
+    image: consul
+    stdin_open: true
+    tty: true
+    ports:
+    - 65135:8500/tcp
+    command:
+    - consul
+    - agent
+    - -disable-host-node-id=true
+    - -server
+    - -ui
+    - -client=0.0.0.0
+    - -data-dir=/tmp/consul
+    - -bootstrap-expect=3
+    labels:
+      io.rancher.container.pull_image: always
